@@ -36,3 +36,22 @@ def fetch_one(user_id: int, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"The requested user is not found")
     return user
+
+@app.put("/api/{user_id}")
+def update(user_id: int, request: User, db: Session = Depends(get_db)):
+    user = db.query(Users).filter(Users.id == user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"The requested user is not found")
+    user.update(request.dict())
+    db.commit()
+    return {"Successfully Updated"}
+
+@app.delete("/api/{user_id}")
+def delete(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(Users).filter(Users.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"The requested user is not found")
+    db.delete(user)
+    db.commit()
+
+    return {"Successfully Deleted"}
