@@ -20,7 +20,7 @@ def get_db():
 
 @app.post("/api", status_code=status.HTTP_201_CREATED)
 def home(request: User, db: Session = Depends(get_db)):
-    new_user = Users(username=request.username, email=request.email)
+    new_user = Users(name=request.name, email=request.email)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
